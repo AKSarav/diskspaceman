@@ -12,14 +12,14 @@ the following tasks under a single window.
     
  # How To Execute
  
- **Step1:** Download the Script and its artifacts from this Github Repository
+ **Step1:** Download the All in one ZIP file `diskspaceman.zip` from the repository
  
  **Step2:** Uncompress/Unzip the downloaded zip file
  
  **Step3:** Execute the script as a valid user, Either ```tomcat``` or ```weblogic``` along with the desired **retentionperiod**
  
  ```shell
- ./diskspaceman.sh -retentionperiod=400days
+ ./diskspaceman.sh --retentionperiod=30days
  ```
  
  # BuiltIn Features
@@ -30,30 +30,30 @@ the following tasks under a single window.
  with time stamp. Take a look at the sample given below
     
  ```java
-    weblogic@testserver> ./diskspaceman.sh -retentionperiod=100days
+    weblogic@testserver> ./diskspaceman.sh --retentionperiod=100days
     22-08-18 14:57:27  **** DISKSPACEMAN - PROCESS STARTED ****
-    22-08-18 14:57:27 LIST OF DIRECTORIES FOUND: [ /opt/weblogic/domains/mwi_domain/servers/AdminServer/logs,/opt/weblogic/domains/mwi_domain/servers/wls_PegaServer1/logs,/opt/weblogic/logs/pega ]
+    22-08-18 14:57:27 LIST OF DIRECTORIES FOUND: [ /opt/weblogic/domains/test_domain/servers/AdminServer/logs,/opt/weblogic/domains/test_domain/servers/wls_PegaServer1/logs,/opt/weblogic/logs/pega ]
     22-08-18 14:57:27
     22-08-18 14:57:27
     22-08-18 14:57:27 ===========================================================
-    22-08-18 14:57:27 PROCESSING DIRECTORY: /opt/weblogic/domains/mwi_domain/servers/AdminServer/logs
+    22-08-18 14:57:27 PROCESSING DIRECTORY: /opt/weblogic/domains/test_domain/servers/AdminServer/logs
     22-08-18 14:57:27
-    22-08-18 14:57:27 LIST OF FILES FOUND FOR LOGROTATION: [ access.log,AdminServer.log,mwi_domain.log ]
-    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/mwi_domain/servers/AdminServer/logs/access.log
-    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/mwi_domain/servers/AdminServer/logs/AdminServer.log
-    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/mwi_domain/servers/AdminServer/logs/mwi_domain.log
+    22-08-18 14:57:27 LIST OF FILES FOUND FOR LOGROTATION: [ access.log,AdminServer.log,test_domain.log ]
+    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/test_domain/servers/AdminServer/logs/access.log
+    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/test_domain/servers/AdminServer/logs/AdminServer.log
+    22-08-18 14:57:27 -- LOGROTATION COMPLETED SUCCESSFULLY FOR /opt/weblogic/domains/test_domain/servers/AdminServer/logs/test_domain.log
     22-08-18 14:57:27
     22-08-18 14:57:27 PURGING PROCESS STARTED
     22-08-18 14:57:27 REMOVING THE 100 DAYS OLD FILES
     22-08-18 14:57:27 LIST OF FILES GOING TO BE REMOVED: [  ]
     22-08-18 14:57:27
     22-08-18 14:57:27 G-ZIPPING THE OTHER AVAILABLE LOGS
-    ./mwi_domain.log06787:  97.1% -- replaced with ./mwi_domain.log06787.gz
+    ./test_domain.log06787:  97.1% -- replaced with ./test_domain.log06787.gz
     ./logrotate-out.conf:     0.0% -- replaced with ./logrotate-out.conf.gz
-    ./mwi_domain.log06835:  96.9% -- replaced with ./mwi_domain.log06835.gz
-    ./mwi_domain.log06808:  97.1% -- replaced with ./mwi_domain.log06808.gz
-    ./mwi_domain.log06826:  97.0% -- replaced with ./mwi_domain.log06826.gz
-    ./mwi_domain.log06878:  97.1% -- replaced with ./mwi_domain.log06878.gz
+    ./test_domain.log06835:  96.9% -- replaced with ./test_domain.log06835.gz
+    ./test_domain.log06808:  97.1% -- replaced with ./test_domain.log06808.gz
+    ./test_domain.log06826:  97.0% -- replaced with ./test_domain.log06826.gz
+    ./test_domain.log06878:  97.1% -- replaced with ./test_domain.log06878.gz
     22-08-18 14:57:27 PURGING PROCESS COMPLETED
     22-08-18 14:57:27 ===========================================================
  ```
@@ -70,7 +70,7 @@ The script performs multiple level of validation to make sure **nothing goes wro
 #### Validation1: Username validation
 
 The script will try to validate the `username` as it is being invoked, to determine the correct **workspace** _The Log directories_
-Script is designed to dynamically switch the log directories based on the user of execution. This is to avoid an accidential execution
+Script is designed to dynamically switch the log directories based on the user of execution. This is to avoid an accidental execution
 of script as an invalid user like `root` , which would end up in messing up the logs and eventually result it application downtime
 
 **_weblogic_**
@@ -145,6 +145,11 @@ If the script has been started as a `tomcat` user, the script will consider the 
   
   :snowflake: CPU load and memory load of this script has been tested and proven to be Efficient and not having any issues.
   
+ ## Additional Notes 
+ 
+  - Complete Test Execution Session Output is in the repository for your reference
+  - This Script can be scheduled to run everyday using **crontab** for efficient server management and housekeeping.
   
-  
+
+ 
   

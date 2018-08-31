@@ -1,0 +1,8 @@
+REPLACELOGFILE
+{
+        compress
+        missingok
+        copytruncate
+        dateext
+        notifempty
+}

@@ -21,11 +21,11 @@ then
 elif [ `whoami` == "artifactory" ]
 then
         DIRTOSEARCH="/opt/jfrog/artifactory/tomcat/logs"
-        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null`   
+        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null`
 elif [ `whoami` == "anthill" ]
 then
         DIRTOSEARCH="/opt/artifactory/logs"
-        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null` 
+        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null`
 elif [ `whoami` == "domain" ]
 then
         DIRTOSEARCH="/opt/np/domain/tomcat/logs"
@@ -33,7 +33,7 @@ then
 elif [ `whoami` == "gym" ]
 then
         DIRTOSEARCH="/opt/np/gym/tomcat/logs"
-        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null`        
+        LOGSDIRS=`ls -d $DIRTOSEARCH 2>/dev/null`
 else
         echo -e "Correct the Errors before proceeding\n"
         echo -e "ERROR: Invalid User to run the script"
@@ -90,17 +90,26 @@ LOGROTATE()
 
 PURGE()
 {
-        FILETOREMOVE=`find $DIR -type f -mtime +$RETENTION -name "*.gz$"`
+        FILETOREMOVE=`find $DIR -type f -mtime +$RETENTION -name "*.gz"`
         LOG "REMOVING THE $RETENTION DAYS OLD FILES WITH GZ EXTENSION"
         LOG "LIST OF FILES GOING TO BE REMOVED: [ `echo $FILETOREMOVE|sed 's/ /,/g' ` ]"
-        find $DIR -type f -mtime +$RETENTION -name "*.gz$" -exec rm -vf {} \;
+        find $DIR -type f -mtime +$RETENTION -name "*.gz" -exec rm -vf {} \;
         LOG
-                LOG "G-ZIPPING THE OTHER AVAILABLE LOGS OLDER THAN 5 DAYS"
+                LOG "G-ZIPPING THE OTHER AVAILABLE LOGS OLDER THAN 2 DAYS"
                                 # PURGING THE LOG FILES OLDER THAN TWO DAYS
-                if [ `find $DIR -type f -mtime +5|egrep -v  "*.gz$|*.cfg$|*.pid$"|wc -l` -gt 0 ]
+                if [ `find . -type f -mtime +2 -not -name "*.gz" -not -name "*.cfg" -not -name "*.pid" -not -name "catalina.out"|wc -l` -gt 0 ]
                 then
-                        #find . -type f -mtime +5|egrep -v  "*.gz$|*.cfg$|*.pid$"|xargs gzip -v
-                        find . -type f -mtime +5 -not -name "*.gz" -not -name "*.cfg" -not -name "*.pid" -exec  gzip -v --suffix $(date +".%m-%d-%Y.gz") {} \;
+                        for logfile in `find . -type f -mtime +2 -not -name "*.gz" -not -name "*.cfg" -not -name "*.pid" -not -name "catalina.out"`
+                        do
+                            fuser $logfile > /dev/null 2>&1
+                            if [ $? -eq 0 ]
+                            then
+                                LOG "Ignoring the $logfile as it seems to be a current file and locked by a process"
+                            else
+                                LOG "Gzipping the file $logfile"
+                                gzip -v --suffix $(date +".%m-%d-%Y.gz") $logfile
+                            fi
+                        done
                 else
                         LOG "NO LOGS FOUND FOR COMPRESS (GZIP)..SKIPPING"
                 fi
